@@ -56,21 +56,26 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
 	// Mode RGB progressif au click
 	if (!TOGGLE_ANIMATION)
 		if (key == GLFW_KEY_R && action == GLFW_REPEAT)
+		{
 			if (!SYMBOL)
 				R_COLOR += STEP;
 			else
 				R_COLOR -= STEP;
-
+		}
 		else if (key == GLFW_KEY_G && action == GLFW_REPEAT)
+		{
 			if (!SYMBOL)
 				G_COLOR += STEP;
 			else
 				R_COLOR -= STEP;
+		}
 		else if (key == GLFW_KEY_B && action == GLFW_REPEAT)
+		{
 			if (!SYMBOL)
 				B_COLOR += STEP;
 			else
 				B_COLOR -= STEP;
+		}
 
 	glClearColor(R_COLOR, G_COLOR, B_COLOR, 1.0);
 }
@@ -114,13 +119,13 @@ int main()
 	glfwSetErrorCallback(onError);
 
 	// Create a windowed mode window and its OpenGL context
-#ifdef __APPLE__
-	// We need to explicitly ask for a 3.3 context on Mac
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-#endif
+	// #ifdef __APPLE__
+	// 	// We need to explicitly ask for a 3.3 context on Mac
+	// 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	// 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+	// 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+	// 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	// #endif
 	GLFWwindow *window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "TD 01 Ex 04", nullptr, nullptr);
 	if (!window)
 	{
