@@ -11,4 +11,4 @@ void drawBase();
 
 void drawArm();
 
-void drawPan();
+void drawPan(int angle);

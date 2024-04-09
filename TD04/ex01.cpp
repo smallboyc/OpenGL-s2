@@ -24,7 +24,7 @@ static int flag_filaire = 0;
 static int flag_animate_rot_scale = 0;
 static int flag_animate_rot_arm = 0;
 
-float angle{0};
+float sign = 1;
 
 /* Error handling function */
 void onError(int error, const char *description)
@@ -173,18 +173,37 @@ int main(int /* argc */, char ** /* argv */)
 		// float radius{4};
 		// glColor3f(1, 0, 0);
 		// glPushMatrix();
-		// glRotatef(angle, 0.0f, 0.0f, 1.0f); // Rotation autour de l'axe Z
+		// glRotatef(flag_animate_rot_arm, 0.0f, 0.0f, 1.0f); // Rotation autour de l'axe Z
 		// glTranslatef(radius, 0, 5);
 		// drawSphere();
 		// glPopMatrix();
-		// /* Increment angle for rotation */
-		// angle += 1; // Adjust rotation speed as needed
+		// /* Increment flag_animate_rot_arm for rotation */
+		// flag_animate_rot_arm += 1; // Adjust rotation speed as needed
 		// SPHERE ROTATION--end
 
-		// CONE
-		drawBase();
+		glColor3f(1, 0, 0);
+		glPushMatrix();
+		glRotatef(flag_animate_rot_scale, 0.0f, 0.0f, 1.0f); // Rotation autour de l'axe Z
+		glPushMatrix();
+		glTranslatef(0, 0, 10);
+		glRotatef(flag_animate_rot_arm, 1.0f, 0.0f, 0.0f);
 		drawArm();
-		drawPan();
+		drawPan(-flag_animate_rot_arm); // IMPORTANT!!!!, cibler l'animation selon l'origine de l'élément (rotation -> translation -> scale)
+		glPopMatrix();
+		glPopMatrix();
+		/* Increment flag_animate_rot_arm for rotation */
+		if (flag_animate_rot_arm == 30)
+			sign *= -1; // Adjust rotation speed as needed
+		else if (flag_animate_rot_arm == -30)
+			sign *= -1;
+		flag_animate_rot_arm += sign;
+		flag_animate_rot_scale += 1;
+
+		// CONE STATIQUE
+		drawBase();
+		// drawArm();
+		// drawPan();
+
 		/* Swap front and back buffers */
 		glfwSwapBuffers(window);
 

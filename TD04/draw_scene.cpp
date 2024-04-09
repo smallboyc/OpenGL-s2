@@ -52,7 +52,7 @@ void drawArm()
 {
     glPushMatrix();
     glColor3f(245.0 / 255.0, 164.0 / 255.0, 66.0 / 255.0);
-    glTranslatef(0, 0, height);
+    // glTranslatef(0, 0, height);
     // SPHERE
     glPushMatrix();
     glScalef(1.6, 1.6, 1.6);
@@ -90,13 +90,14 @@ void drawLines()
     glEnd();
 }
 
-void drawPan()
+void drawPan(int angle)
 {
     glPushMatrix();
 
-        // PAN 1
+    // PAN 1
     glPushMatrix();
-    glTranslatef(0, -10, 10);
+    glTranslatef(0, -10, 0);
+    glRotatef(angle, 1.0f, 0.0f, 0.0f);
     // Circle 1
     glPushMatrix();
     glColor3f(89.0 / 255.0, 115.0 / 255.0, 0.0);
@@ -113,7 +114,8 @@ void drawPan()
 
     // PAN 2
     glPushMatrix();
-    glTranslatef(0, 10, 10);
+    glTranslatef(0, 10, 0);
+    glRotatef(angle, 1.0f, 0.0f, 0.0f);
     // Circle 2
     glPushMatrix();
     glColor3f(89.0 / 255.0, 115.0 / 255.0, 0.0);
