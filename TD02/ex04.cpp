@@ -9,14 +9,10 @@
 //---------VARIABLES DEFINITIONS-----------//
 
 /* Minimal time wanted between two images */
+static const float GL_VIEW_SIZE = 6;
 static const double FRAMERATE_IN_SECONDS = 1. / 30.;
-
-/* Espace fenetre virtuelle */
-static const float GL_VIEW_SIZE = 2;
-
 int WINDOW_WIDTH = 800;
 int WINDOW_HEIGHT = 800;
-
 static float aspectRatio;
 
 struct Vertex
@@ -24,6 +20,8 @@ struct Vertex
     double pos_x{0};
     double pos_y{0};
 };
+
+Vertex origins_square;
 
 std::vector<Vertex> vectex{};
 
@@ -93,7 +91,6 @@ void drawSquare(bool full)
     float square_size{1};
     float semi_square_size{square_size / 2};
     full ? glBegin(GL_POLYGON) : glBegin(GL_LINE_LOOP);
-    glColor3f(1.0f, 1.0f, 1.0f);
     glVertex2d(semi_square_size, semi_square_size);
     glVertex2d(semi_square_size, -semi_square_size);
     glVertex2d(-semi_square_size, -semi_square_size);
@@ -106,7 +103,7 @@ void drawCircle(bool full)
     float radius{0.5f};
     int step{32};
     full ? glBegin(GL_POLYGON) : glBegin(GL_LINE_LOOP);
-    glColor3f(1.0f, 1.0f, 1.0f);
+    glColor3f(1.0f, 0.5f, 0.0f);
     for (int i{0}; i < 2 * step; i++)
     {
         float teta = i * M_PI / step;
@@ -146,19 +143,20 @@ void mouse_button_callback(GLFWwindow *window, int button, int action, int mods)
         glfwGetCursorPos(window, &xpos, &ypos);
         if (aspectRatio >= 1)
         {
-            xpos = aspectRatio * (xpos * (double(2) / WINDOW_WIDTH) - 1);
-            ypos = -ypos * (double(2) / WINDOW_HEIGHT) + 1;
+            xpos = (GL_VIEW_SIZE / 2) * (aspectRatio * (xpos * (double(2) / WINDOW_WIDTH) - 1));
+            ypos = (GL_VIEW_SIZE / 2) * (-ypos * (double(2) / WINDOW_HEIGHT) + 1);
         }
         else
         {
-            xpos = xpos * (double(2) / WINDOW_WIDTH) - 1;
-            ypos = 1 / aspectRatio * (-ypos * (double(2) / WINDOW_HEIGHT) + 1);
+            xpos = (GL_VIEW_SIZE / 2) * (xpos * (double(2) / WINDOW_WIDTH) - 1);
+            ypos = (GL_VIEW_SIZE / 2) * (1 / aspectRatio * (-ypos * (double(2) / WINDOW_HEIGHT) + 1));
         }
 
         Vertex v;
         v.pos_x = xpos;
         v.pos_y = ypos;
-
+        origins_square.pos_x = xpos;
+        origins_square.pos_y = ypos;
         vectex.push_back(v);
     }
 }
@@ -229,16 +227,45 @@ int main()
         double startTime = glfwGetTime();
 
         /* Render here */
+
         glClear(GL_COLOR_BUFFER_BIT);
         glClearColor(0.0, 0.0, 0.0, 0.0);
 
-        // Start drawing
+        //-------Start drawing
         drawOrigin();
-        drawCircle(false);
-        glColor3f(1.0f, 1.0f, 1.0f);
-        drawPrimitive(primitive);
+        // Circle
+        glPushMatrix();
+        glTranslatef(1.0f, 2.0f, 0.0f);
+        drawCircle(true);
+        glPopMatrix();
 
-        // End drawing
+        // RED Square
+        glPushMatrix();
+        glRotatef(45, 0., 0., 1.);
+        glTranslatef(1.0f, 0.0f, 0.0f);
+        glColor3f(1.0f, 0.0f, 0.0f);
+        drawSquare(false);
+        glPopMatrix();
+
+        // PURPLE Square
+        glPushMatrix();
+        glTranslatef(1.0f, 0.0f, 0.0f);
+        glRotatef(45, 0., 0., 1.);
+        glColor3f(1.0f, 0.0f, 1.0f);
+        drawSquare(false);
+        glPopMatrix();
+
+        // GREEN Square
+        glPushMatrix();
+        glColor3f(0.0f, 1.0f, 0.0f);
+        glTranslatef(origins_square.pos_x, origins_square.pos_y, 0.0f);
+        drawSquare(false);
+        glPopMatrix();
+
+        glColor3f(1.0f, 1.0f, 1.0f);
+        // drawPrimitive(primitive);
+
+        //----------End drawing
 
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
