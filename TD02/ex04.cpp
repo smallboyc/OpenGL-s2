@@ -230,7 +230,8 @@ int main()
 
         glClear(GL_COLOR_BUFFER_BIT);
         glClearColor(0.0, 0.0, 0.0, 0.0);
-
+        glMatrixMode(GL_MODELVIEW);
+        glLoadIdentity();
         //-------Start drawing
         drawOrigin();
         // Circle
@@ -248,19 +249,19 @@ int main()
         glPopMatrix();
 
         // PURPLE Square
-        glPushMatrix();
-        glTranslatef(1.0f, 0.0f, 0.0f);
-        glRotatef(45, 0., 0., 1.);
-        glColor3f(1.0f, 0.0f, 1.0f);
-        drawSquare(false);
-        glPopMatrix();
+        // glPushMatrix();
+        // glTranslatef(1.0f, 0.0f, 0.0f);
+        // glRotatef(45, 0., 0., 1.);
+        // glColor3f(1.0f, 0.0f, 1.0f);
+        // drawSquare(false);
+        // glPopMatrix();
 
         // GREEN Square
-        glPushMatrix();
-        glColor3f(0.0f, 1.0f, 0.0f);
-        glTranslatef(origins_square.pos_x, origins_square.pos_y, 0.0f);
-        drawSquare(false);
-        glPopMatrix();
+        // glPushMatrix();
+        // glColor3f(0.0f, 1.0f, 0.0f);
+        // glTranslatef(origins_square.pos_x, origins_square.pos_y, 0.0f);
+        // drawSquare(false);
+        // glPopMatrix();
 
         glColor3f(1.0f, 1.0f, 1.0f);
         // drawPrimitive(primitive);

@@ -3,17 +3,18 @@
 
 #include "GLFW/glfw3.h"
 #include "glad/glad.h"
-#include <OpenGL/gl.h>
 #include <iostream>
 #include <cmath>
 
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
 #include "3D_tools.hpp"
 #include "draw_scene.hpp"
 
 /* Window properties */
 static const unsigned int WINDOW_WIDTH = 1000;
 static const unsigned int WINDOW_HEIGHT = 1000;
-static const char WINDOW_TITLE[] = "TD04 Ex01";
+static const char WINDOW_TITLE[] = "TD05";
 static float aspectRatio = 1.0;
 
 /* Minimal time wanted between two images */
@@ -23,8 +24,6 @@ static const double FRAMERATE_IN_SECONDS = 1. / 30.;
 static int flag_filaire = 0;
 static int flag_animate_rot_scale = 0;
 static int flag_animate_rot_arm = 0;
-
-float sign = 1;
 
 /* Error handling function */
 void onError(int error, const char *description)
@@ -135,6 +134,33 @@ int main(int /* argc */, char ** /* argv */)
 	glPointSize(5.0);
 	glEnable(GL_DEPTH_TEST);
 
+	float rotation = 0.0;
+
+	/*WORK WITH IMG*/
+
+	/*START --- IMG parameters*/
+	int IMG_WIDTH;
+	int IMG_HEIGHT;
+	int CANAUX;
+
+	// EXO 1
+	unsigned char *TRIFORCE_IMG = NULL;
+	TRIFORCE_IMG = stbi_load("../assets/triforce.jpg", &IMG_WIDTH, &IMG_HEIGHT, &CANAUX, 0);
+	if (TRIFORCE_IMG == NULL)
+		std::cout << "no image(s) loaded" << std::endl;
+	else
+		std::cout << "ok" << std::endl;
+
+	// EXO 2
+	GLuint TEXTURE;
+	glGenTextures(1, &TEXTURE);
+	glBindTexture(GL_TEXTURE_2D, TEXTURE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, IMG_WIDTH, IMG_HEIGHT, 0, GL_RGB, GL_UNSIGNED_BYTE, TRIFORCE_IMG);
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+	/*END --- WORK WITH IMG*/
+
 	/* Loop until the user closes the window */
 	while (!glfwWindowShouldClose(window))
 	{
@@ -143,70 +169,34 @@ int main(int /* argc */, char ** /* argv */)
 
 		/* Cleaning buffers and setting Matrix Mode */
 		glClearColor(0.2, 0.0, 0.0, 0.0);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		if (flag_filaire)
-			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-		else
-			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
 		setCamera();
-
-		/* Initial scenery setup */
+		glColor3f(1.0, 1.0, 1.0);
+		glEnable(GL_TEXTURE_2D);
+		glBindTexture(GL_TEXTURE_2D, TEXTURE);
+		// START - DESSIN QUADS
 		glPushMatrix();
-		glTranslatef(0.0, 0.0, -0.01);
-		glScalef(10.0, 10.0, 1.0);
-		glColor3f(0.0, 0.0, 0.1);
-		drawSquare();
-		glBegin(GL_POINTS);
-		glColor3f(1.0, 1.0, 0.0);
-		glVertex3f(0.0, 0.0, 0.0);
-		glEnd();
+		glBegin(GL_QUADS);
+		glTexCoord2f(0, 0);
+		glVertex2d(0, 0);
+		glTexCoord2f(0, 1);
+		glVertex2d(0, 1);
+		glTexCoord2f(1, 1);
+		glVertex2d(1, 1);
+		glTexCoord2f(1, 0);
+		glVertex2d(1, 0);
+		glEnd;
 		glPopMatrix();
-
+		// END - DESSIN QUADS
+		glBindTexture(GL_TEXTURE_2D, 0);
+		glDisable(GL_TEXTURE_2D);
 		/* Scene rendering */
 		drawFrame();
-
-		// SPHERE ROTATION--start
-		// float radius{4};
-		// glColor3f(1, 0, 0);
-		// glPushMatrix();
-		// glRotatef(flag_animate_rot_arm, 0.0f, 0.0f, 1.0f); // Rotation autour de l'axe Z
-		// glTranslatef(radius, 0, 5);
-		// drawSphere();
-		// glPopMatrix();
-		// /* Increment flag_animate_rot_arm for rotation */
-		// flag_animate_rot_arm += 1; // Adjust rotation speed as needed
-		// SPHERE ROTATION--end
-
-		glColor3f(1, 0, 0);
-		glPushMatrix();
-		{
-			glRotatef(flag_animate_rot_scale, 0.0f, 0.0f, 1.0f); // Rotation autour de l'axe Z
-			glPushMatrix();
-			{
-				glTranslatef(0, 0, 10);
-				glRotatef(flag_animate_rot_arm, 1.0f, 0.0f, 0.0f);
-				drawArm();
-				drawPan(-flag_animate_rot_arm); // IMPORTANT!!!!, cibler l'animation selon l'origine de l'élément (rotation -> translation -> scale)
-			}
-			glPopMatrix();
-		}
-		glPopMatrix();
-		//on gère la balance pour la faire passer de droite à gauche et inversement 
-		if (flag_animate_rot_arm == 30)
-			sign *= -1;
-		else if (flag_animate_rot_arm == -30)
-			sign *= -1;
-		flag_animate_rot_arm += sign;
-		flag_animate_rot_scale += 1;
-
-		// CONE STATIQUE
-		drawBase();
-		// drawArm();
-		// drawPan();
+		/* Initial scenery setup */
 
 		/* Swap front and back buffers */
 		glfwSwapBuffers(window);
@@ -223,8 +213,10 @@ int main(int /* argc */, char ** /* argv */)
 		}
 
 		/* Animate scenery */
+		rotation++;
 	}
-
+	glDeleteTextures(1, &TEXTURE);
+	stbi_image_free(TRIFORCE_IMG);
 	glfwTerminate();
 	return 0;
 }

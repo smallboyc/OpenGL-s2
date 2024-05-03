@@ -93,42 +93,56 @@ void drawLines()
 void drawPan(int angle)
 {
     glPushMatrix();
+    {
 
-    // PAN 1
-    glPushMatrix();
-    glTranslatef(0, -10, 0);
-    glRotatef(angle, 1.0f, 0.0f, 0.0f);
-    // Circle 1
-    glPushMatrix();
-    glColor3f(89.0 / 255.0, 115.0 / 255.0, 0.0);
-    glTranslatef(0, 0, -height / 2);
-    glScalef(3, 3, 1);
-    drawCircle();
-    glPopMatrix();
+        // PAN 1
+        glPushMatrix();
+        {
+            glTranslatef(0, -10, 0);
+            glRotatef(angle, 1.0f, 0.0f, 0.0f);
+            // Circle 1
+            glPushMatrix();
+            {
 
-    // Line 1
-    glPushMatrix();
-    drawLines();
-    glPopMatrix();
-    glPopMatrix();
+                glColor3f(89.0 / 255.0, 115.0 / 255.0, 0.0);
+                glTranslatef(0, 0, -height / 2);
+                glScalef(3, 3, 1);
+                drawCircle();
+            }
+            glPopMatrix();
 
-    // PAN 2
-    glPushMatrix();
-    glTranslatef(0, 10, 0);
-    glRotatef(angle, 1.0f, 0.0f, 0.0f);
-    // Circle 2
-    glPushMatrix();
-    glColor3f(89.0 / 255.0, 115.0 / 255.0, 0.0);
-    glTranslatef(0, 0, -height / 2);
-    glScalef(3, 3, 1);
-    drawCircle();
-    glPopMatrix();
+            // Line 1
+            glPushMatrix();
+            drawLines();
+            glPopMatrix();
+        }
+        glPopMatrix();
 
-    // Line 2
-    glPushMatrix();
-    drawLines();
-    glPopMatrix();
-    glPopMatrix();
+        // PAN 1 --- end
 
+        // PAN 2
+        glPushMatrix();
+        {
+
+            glTranslatef(0, 10, 0);
+            glRotatef(angle, 1.0f, 0.0f, 0.0f);
+            // Circle 2
+            glPushMatrix();
+            {
+                glColor3f(89.0 / 255.0, 115.0 / 255.0, 0.0);
+                glTranslatef(0, 0, -height / 2);
+                glScalef(3, 3, 1);
+                drawCircle();
+            }
+            glPopMatrix();
+
+            // Line 2
+            glPushMatrix();
+            drawLines();
+            glPopMatrix();
+        }
+        glPopMatrix();
+        // PAN 2 --- end
+    }
     glPopMatrix();
 }
